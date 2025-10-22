@@ -1,25 +1,25 @@
 {
-  "name": "wp_timed_content_block",
+	"name": "wp-timed-content-block",
   "version": "1.0.0",
-  "description": "WordPress plugin which provides a Gutenberg block to hide content depending on the current time.",
-  "main": "index.js",
-  "scripts": {
-    "start": "wp-scripts start",
-    "build": "wp-scripts build",
-    "plugin-zip": "wp-scripts plugin-zip",
-    "format": "wp-scripts format",
-    "lint:css": "wp-scripts lint-style",
-    "lint:js": "wp-scripts lint-js",
-    "test:e2e": "wp-scripts test-e2e",
-    "test:unit": "wp-scripts test-unit-js"
-  },
+	"description": "Gutenberg block to hide content depending on the current time",
+	"main": "build/index.js",
+	"scripts": {
+		"build": "wp-scripts build --webpack-copy-php --blocks-manifest",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start --webpack-copy-php --blocks-manifest"
+	},
   "keywords": [
     "WordPress",
     "Gutenberg",
     "conditional"
   ],
   "author": "ByteSturm",
-  "license": "GPL-2.0",
+	"homepage": "https://github.com/ByteSturm/wp_timed_content_block",
+	"license": "GPL-2.0",
   "devDependencies": {
     "@wordpress/scripts": "^30.26.0"
   }
