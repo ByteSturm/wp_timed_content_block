@@ -1,9 +1,120 @@
-/**
- * The following styles get applied inside the editor only.
- *
- * Replace them with your own styles or remove the file completely.
- */
+// Editor styles for the Timeded Content Block
+.wp-block-wp-timed-content-block {
+    margin: 1.5em 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    
+    // Header styling
+    .timed-content-block-editor__header {
+        background-color: #f8f9fa;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #1e1e1e;
+        
+        .dashicons {
+            color: #007cba;
+        }
+        
+        .timed-content-block-editor__schedule {
+            margin-left: auto;
+            font-size: 0.9em;
+            font-weight: normal;
+            color: #646970;
+            background: #f0f0f1;
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+    }
+    
+    // Content area
+    .timed-content-block-editor__content {
+        padding: 16px;
+        background: #fff;
+        
+        // Style the block appender
+        .block-list-appender {
+            width: 100%;
+            margin: 0;
+            
+            button {
+                width: 100%;
+                justify-content: flex-start;
+                padding: 12px;
+                box-shadow: none;
+                border: 1px dashed #ccc;
+                background: #f9f9f9;
+                
+                &:hover {
+                    background: #f0f0f0;
+                    border-color: #999;
+                }
+            }
+        }
+    }
+    
+    // Recurring settings
+    .recurring-settings {
+        margin-top: 12px;
+        
+        .components-base-control {
+            margin-bottom: 8px;
+        }
+        
+        h3 {
+            font-size: 13px;
+            font-weight: 500;
+            margin: 1.5em 0 0.5em;
+            color: #1e1e1e;
+        }
+    }
+    
+    // Date/time picker adjustments
+    .components-datetime__date {
+        padding: 0;
+        margin: 0;
+    }
+    
+    // Timezone selector
+    .components-select-control__input {
+        width: 100%;
+    }
+}
 
-.wp-block-wp-timed-content-block-wp-timed-content-block {
-	border: 1px dotted #f00;
+// Adjust the block toolbar
+.block-editor-block-toolbar .components-toolbar {
+    .timed-content-toolbar-button {
+        display: flex;
+        align-items: center;
+        
+        .dashicons-clock {
+            margin-right: 4px;
+        }
+    }
+}
+
+// Make sure the date/time picker is visible in the sidebar
+.components-popover {
+    z-index: 999999;
+}
+
+// Responsive adjustments
+@media (max-width: 600px) {
+    .wp-block-wp-timed-content-block {
+        .timed-content-block-editor__header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            
+            .timed-content-block-editor__schedule {
+                margin-left: 0;
+                align-self: flex-start;
+            }
+        }
+    }
 }
