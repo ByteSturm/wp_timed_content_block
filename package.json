@@ -1,0 +1,16 @@
+{
+  "name": "wp_timed_content_block",
+  "version": "1.0.0",
+  "description": "WordPress plugin which provides a Gutenberg block to hide content depending on the current time.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "WordPress",
+    "Gutenberg",
+    "conditional"
+  ],
+  "author": "ByteSturm",
+  "license": "GPL-2.0"
+}
