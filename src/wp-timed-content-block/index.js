@@ -17,9 +17,12 @@ import metadata from './block.json';
  * Block edit component
  */
 const Edit = ( { attributes, setAttributes, isSelected } ) => {
+    const now = new Date();
+    const defaultStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const defaultEnd = new Date(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).getTime() + 1000 * 60 * 60 * 24 * 7);
     const { 
-        startDateTime = '',
-        endDateTime = '',
+        startDateTime,
+        endDateTime,
         timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     } = attributes;
 
@@ -27,18 +30,33 @@ const Edit = ( { attributes, setAttributes, isSelected } ) => {
         className: 'wp-block-wp-timed-content-block',
     });
 
-    // Set default timezone if not set
+    // Set default values when the block is first loaded
     useEffect(() => {
+        const updates = {};
+        
         if (!timezone) {
-            setAttributes({ timezone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+            updates.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         }
-    }, [timezone]);
+        if (!startDateTime) {
+            updates.startDateTime = defaultStart.toISOString();
+        }
+        if (!endDateTime) {
+            updates.endDateTime = defaultEnd.toISOString();
+        }
+        
+        if (Object.keys(updates).length > 0) {
+            setAttributes(updates);
+        }
+    }, []); // Empty dependency array means this runs once on mount
 
     // Allow all block types by setting to null
     const ALLOWED_BLOCKS = null;
 
     // Use an empty template to avoid adding default blocks
-    const TEMPLATE = [['abb/alert-box', {"cId":"15d35458-9","type":"info","message":"Platzhalter für Hinweistext","icon":{"class":"fa-solid fa-circle-info"},"colors":{"color":"#2cacff","bg":"#2cacff1a"},"border":{"width":"2px","color":"#2cacff","radius":"8px"},"shadow":{}}]];
+    const TEMPLATE = [
+        // ['abb/alert-box', {"cId":"15d35458-9","type":"info","message":"Platzhalter für Hinweistext","icon":{"class":"fa-solid fa-circle-info"},"colors":{"color":"#2cacff","bg":"#2cacff1a"},"border":{"width":"2px","color":"#2cacff","radius":"8px"},"shadow":{}}], 
+        ['core/paragraph', {"placeholder":"This is just a placeholder..."}]
+    ];
 
     return (
         <div {...blockProps}>
@@ -49,21 +67,21 @@ const Edit = ( { attributes, setAttributes, isSelected } ) => {
                             <>
                                 <h3>{__('Start Date/Time', 'wp-timed-content-block')}</h3>
                                 <DateTimePicker
-                                    currentDate={startDateTime || new Date().toISOString()}
+                                    currentDate={startDateTime}
                                     onChange={(date) => setAttributes({ startDateTime: date })}
-                                    is12Hour={true}
+                                    startOfWeek="1"
                                 />
                                 
                                 <h3 style={{ marginTop: '1.5em' }}>{__('End Date/Time', 'wp-timed-content-block')}</h3>
                                 <DateTimePicker
-                                    currentDate={endDateTime || new Date().toISOString()}
+                                    currentDate={endDateTime}
                                     onChange={(date) => setAttributes({ endDateTime: date })}
-                                    is12Hour={true}
+                                    startOfWeek="1"
                                 />
                             </>
                         }
                         
-                        <div style={{ marginTop: '1.5em' }}>
+                        {/* <div style={{ marginTop: '1.5em' }}>
                             <SelectControl
                                 label={__('Timezone', 'wp-timed-content-block')}
                                 value={timezone}
@@ -74,7 +92,7 @@ const Edit = ( { attributes, setAttributes, isSelected } ) => {
                                 ]}
                                 onChange={(value) => setAttributes({ timezone: value })}
                             />
-                        </div>
+                        </div> */}
                     </PanelBody>
                 </InspectorControls>
             )}
@@ -83,11 +101,10 @@ const Edit = ( { attributes, setAttributes, isSelected } ) => {
                 <div className="timed-content-block-editor__header">
                     <span className="dashicons dashicons-clock"></span>
                     <span>{__('Timed Content', 'wp-timed-content-block')}</span>
-                    {!isSelected && (
-                        <div className="timed-content-block-editor__schedule">
-                            <span>{__('One-time schedule', 'wp-timed-content-block')}</span>
-                        </div>
-                    )}
+                    <div className="timed-content-block-editor__schedule">
+                        <span>From: {startDateTime ? new Date(startDateTime).toLocaleString() : __('Not set', 'wp-timed-content-block')}</span>
+                        <span>Until: {endDateTime ? new Date(endDateTime).toLocaleString() : __('Not set', 'wp-timed-content-block')}</span>
+                    </div>
                 </div>
                 <div className="timed-content-block-editor__content">
                     <InnerBlocks
@@ -108,8 +125,8 @@ const Edit = ( { attributes, setAttributes, isSelected } ) => {
 const Save = ( { attributes } ) => {
     const blockProps = useBlockProps.save({
         className: 'wp-block-wp-timed-content-block',
-        'data-start-datetime': attributes.startDateTime || '',
-        'data-end-datetime': attributes.endDateTime || '',
+        'data-start-datetime': attributes.startDateTime,
+        'data-end-datetime': attributes.endDateTime,
         'data-timezone': attributes.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
 

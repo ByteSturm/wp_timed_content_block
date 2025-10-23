@@ -26,6 +26,8 @@
             margin-left: auto;
             font-size: 0.9em;
             font-weight: normal;
+            display: flex;
+            flex-direction: column;
             // color: var(--wp--preset--color--black);
             // background: var(--wp--preset--color--light-gray);
             padding: 2px 8px;
