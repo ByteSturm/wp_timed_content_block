@@ -89,7 +89,7 @@ const Edit = ( { attributes, setAttributes, isSelected } ) => {
                         </div>
                     )}
                 </div>
-                <div className="timed-content-block-content">
+                <div className="timed-content-block-editor__content">
                     <InnerBlocks
                         allowedBlocks={ALLOWED_BLOCKS}
                         template={TEMPLATE}
