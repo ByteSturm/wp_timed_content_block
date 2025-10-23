@@ -53,12 +53,10 @@ function initTimedContentBlocks() {
             // Get attributes from data attributes
             const startDateTime = block.dataset.startDatetime;
             const endDateTime = block.dataset.endDatetime;
-            const isRecurring = block.dataset.recurring === 'true';
-            const daysOfWeek = JSON.parse(block.dataset.daysOfWeek || '[]');
             const timezone = block.dataset.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
             
             // If required data is missing, show the block and exit
-            if ((!startDateTime || !endDateTime) && !isRecurring) {
+            if ((!startDateTime || !endDateTime)) {
                 block.classList.remove('timed-content-hidden');
                 return;
             }
@@ -72,31 +70,16 @@ function initTimedContentBlocks() {
             
             let shouldShow = false;
             
-            if (isRecurring) {
-                // For recurring events, check if current day is in the selected days
-                // and if current time is within the specified time range
-                const startDate = new Date(startDateTime);
-                const endDate = new Date(endDateTime);
-                
-                const startTime = formatTime(startDate);
-                const endTime = formatTime(endDate);
-                
-                const isDaySelected = daysOfWeek.length === 0 || daysOfWeek.includes(currentDay);
-                const isTimeInRangeValue = isTimeInRange(startTime, endTime, currentTime);
-                
-                shouldShow = isDaySelected && isTimeInRangeValue;
-            } else {
-                // For one-time events, check if current time is within the date range
-                const startDate = new Date(startDateTime);
-                const endDate = new Date(endDateTime);
-                
-                // Adjust dates to the same timezone for comparison
-                const startTime = new Date(startDate.toLocaleString('en-US', { timeZone: timezone }));
-                const endTime = new Date(endDate.toLocaleString('en-US', { timeZone: timezone }));
-                const currentTimeDate = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
-                
-                shouldShow = currentTimeDate >= startTime && currentTimeDate <= endTime;
-            }
+            // For one-time events, check if current time is within the date range
+            const startDate = new Date(startDateTime);
+            const endDate = new Date(endDateTime);
+            
+            // Adjust dates to the same timezone for comparison
+            const startTime = new Date(startDate.toLocaleString('en-US', { timeZone: timezone }));
+            const endTime = new Date(endDate.toLocaleString('en-US', { timeZone: timezone }));
+            const currentTimeDate = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
+            
+            shouldShow = currentTimeDate >= startTime && currentTimeDate <= endTime;
             
             // Toggle visibility
             if (shouldShow) {

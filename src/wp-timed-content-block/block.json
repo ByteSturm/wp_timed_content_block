@@ -16,17 +16,6 @@
             "type": "string",
             "default": ""
         },
-        "recurring": {
-            "type": "boolean",
-            "default": false
-        },
-        "daysOfWeek": {
-            "type": "array",
-            "default": [],
-            "items": {
-                "type": "number"
-            }
-        },
         "timezone": {
             "type": "string",
             "default": ""

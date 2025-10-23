@@ -13,8 +13,6 @@
 // Get block attributes with defaults
 $start_datetime = $attributes['startDateTime'] ?? '';
 $end_datetime = $attributes['endDateTime'] ?? '';
-$recurring = $attributes['recurring'] ?? false;
-$days_of_week = $attributes['daysOfWeek'] ?? [];
 $timezone = $attributes['timezone'] ?? wp_timezone_string();
 
 // Set the timezone
@@ -33,33 +31,8 @@ if (empty($start_datetime) || empty($end_datetime)) {
 } else {
     $start_date = new DateTime($start_datetime, $timezone_obj);
     $end_date = new DateTime($end_datetime, $timezone_obj);
-
-    if ($recurring) {
-        // For recurring events, check if current day is in the selected days
-        // and if current time is within the specified time range
-        $current_day = (int) $now->format('w'); // 0 (Sunday) to 6 (Saturday)
-        $is_day_selected = empty($days_of_week) || in_array($current_day, $days_of_week);
-        
-        // Get just the time parts
-        $start_time = $start_date->format('H:i');
-        $end_time = $end_date->format('H:i');
-        $current_time = $now->format('H:i');
-        
-        // Check if current time is within the range
-        $is_time_in_range = false;
-        if ($start_time <= $end_time) {
-            // Normal range (e.g., 09:00 to 17:00)
-            $is_time_in_range = ($current_time >= $start_time && $current_time <= $end_time);
-        } else {
-            // Overnight range (e.g., 22:00 to 06:00)
-            $is_time_in_range = ($current_time >= $start_time || $current_time <= $end_time);
-        }
-        
-        $should_render = $is_day_selected && $is_time_in_range;
-    } else {
-        // For one-time events, check if current time is within the date range
-        $should_render = ($now >= $start_date && $now <= $end_date);
-    }
+    // For one-time events, check if current time is within the date range
+    $should_render = ($now >= $start_date && $now <= $end_date);
 }
 
 // Don't output anything if the content shouldn't be shown
