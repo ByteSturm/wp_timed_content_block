@@ -1,106 +1,46 @@
 // Editor styles for the Timeded Content Block
 .wp-block-wp-timed-content-block {
-    // margin: 1.5em 0;
-    // margin: 4px;
-    // border: 1px solid var(--wp--preset--color--black);
-    // border-radius: 4px;
-    // overflow: hidden;
-    // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    
-    // Header styling
-    .timed-content-block-editor__header {
-        background-color: var(--wp--preset--color--light-gray);
-        // padding: 12px 16px;
-        // border-bottom: 1px solid var(--wp--preset--color--light-gray);
-        display: flex;
-        align-items: center;
-        // gap: 8px;
-        font-weight: 600;
-        color: var(--wp--preset--color--black);
-        
-        .dashicons {
-            color: var(--wp--preset--color--black);
-        }
-        
-        .timed-content-block-editor__schedule {
-            margin-left: auto;
-            font-size: 0.9em;
-            font-weight: normal;
-            display: flex;
-            flex-direction: column;
-            // color: var(--wp--preset--color--black);
-            // background: var(--wp--preset--color--light-gray);
-            padding: 2px 8px;
-            border-radius: 2px;
-        }
-    }
-    
-    // Content area
-    .timed-content-block-editor__content {
-        // padding: 16px;
-        // margin: 0;
-        background: var(--wp--preset--color--white);
-        
-        // Style the block appender
-        .block-list-appender {
-            // width: 100%;
-            
-            button {
-                // width: 100%;
-                justify-content: flex-start;
-                // padding: 12px;
-                // box-shadow: none;
-                color: var(--wp--preset--color--white);
-                background: var(--wp--preset--color--black);
-                
-                &:hover {
-                    background: var(--wp-admin-theme-color);
-                }
-            }
-        }
-    }
-    
-    // // Date/time picker adjustments
-    // .components-datetime__date {
-    //     padding: 0;
-    //     margin: 0;
-    // }
-    
-    // // Timezone selector
-    // .components-select-control__input {
-    //     width: 100%;
-    // }
+
+	// Header styling
+	.timed-content-block-editor__header {
+		background-color: var(--wp--preset--color--light-gray);
+		display: flex;
+		align-items: center;
+		font-weight: 600;
+		color: var(--wp--preset--color--black);
+
+		.dashicons {
+			color: var(--wp--preset--color--black);
+		}
+
+		.timed-content-block-editor__schedule {
+			margin-left: auto;
+			font-size: 0.9em;
+			font-weight: 400;
+			display: flex;
+			flex-direction: column;
+			padding: 2px 8px;
+			border-radius: 2px;
+		}
+	}
+
+	// Content area
+	.timed-content-block-editor__content {
+		background: var(--wp--preset--color--white);
+
+		// Style the block appender
+		.block-list-appender {
+
+			button {
+				width: 100%;
+				justify-content: flex-start;
+				color: var(--wp--preset--color--white);
+				background: var(--wp--preset--color--black);
+
+				&:hover {
+					background: var(--wp-admin-theme-color);
+				}
+			}
+		}
+	}
 }
-
-// Adjust the block toolbar
-// .block-editor-block-toolbar .components-toolbar {
-//     .timed-content-toolbar-button {
-//         display: flex;
-//         align-items: center;
-        
-//         .dashicons-clock {
-//             margin-right: 4px;
-//         }
-//     }
-// }
-
-// Make sure the date/time picker is visible in the sidebar
-.components-popover {
-    z-index: 999999;
-}
-
-// Responsive adjustments
-// @media (max-width: 600px) {
-//     .wp-block-wp-timed-content-block {
-//         .timed-content-block-editor__header {
-//             flex-direction: column;
-//             align-items: flex-start;
-//             gap: 4px;
-            
-//             .timed-content-block-editor__schedule {
-//                 margin-left: 0;
-//                 align-self: flex-start;
-//             }
-//         }
-//     }
-// }

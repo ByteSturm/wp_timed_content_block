@@ -1,34 +1,32 @@
 {
-    "$schema": "https://schemas.wp.org/trunk/block.json",
-    "apiVersion": 3,
-    "name": "wp-timed-content-block/wp-timed-content-block",
-    "version": "1.0.0",
-    "title": "Timed Content",
-    "category": "widgets",
-    "icon": "clock",
-    "description": "Show or hide content based on date and time settings.",
-    "attributes": {
-        "startDateTime": {
-            "type": "string",
-            "default": ""
-        },
-        "endDateTime": {
-            "type": "string",
-            "default": ""
-        },
-        "timezone": {
-            "type": "string",
-            "default": ""
-        }
-    },
-    "supports": {
-        "html": false,
-        "align": ["wide", "full"]
-    },
-    "textdomain": "wp-timed-content-block",
-    "editorScript": "file:./index.js",
-    "editorStyle": "file:./index.css",
-    "style": "file:./style-index.css",
-    "viewScript": "file:./view.js",
-    "render": "file:./render.php"
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wp-timed-content-block/wp-timed-content-block",
+	"version": "1.0.0",
+	"title": "Timed Content",
+	"category": "widgets",
+	"icon": "clock",
+	"description": "Show or hide content based on date and time settings.",
+	"attributes": {
+		"startDateTime": {
+			"type": "string",
+			"default": ""
+		},
+		"endDateTime": {
+			"type": "string",
+			"default": ""
+		},
+		"timezone": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"textdomain": "wp-timed-content-block",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php"
 }
