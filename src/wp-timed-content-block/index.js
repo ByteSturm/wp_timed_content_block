@@ -3,8 +3,8 @@
  */
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, InnerBlocks, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, ToggleControl, SelectControl, DateTimePicker } from '@wordpress/components';
+import { useBlockProps, InnerBlocks, InspectorControls, BlockControls } from '@wordpress/block-editor';
+import { PanelBody, ToggleControl, SelectControl, DateTimePicker, Button, Modal, TimePicker, Toolbar, ToolbarGroup, ToolbarButton, TextControl } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 
 // Import styles
@@ -13,30 +13,66 @@ import './editor.scss';
 // Import the block's metadata
 import metadata from './block.json';
 
+const startOfDay = (date) => {
+    const referenceDate = new Date(date);
+    return new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate(), 0, 0, 0);
+}
+
+const endOfDay = (date) => {
+    const referenceDate = new Date(date);
+    return new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate(), 23, 59, 59);
+}
+
+const MyModal = ({ timestamp, closeModal }) => {
+    const [currentValue, setCurrentValue] = useState(timestamp);
+    return (
+        <>
+            <Modal title={ __( 'Select Date and Time', 'wp-timed-content-block' ) } onRequestClose={ () => closeModal() }>
+                <DateTimePicker
+                        currentDate={currentValue}
+                        onChange={(date) => setCurrentValue(date)}
+                        startOfWeek="1"
+                    />
+                <Button variant="secondary" onClick={ () => closeModal(currentValue) }>
+                    { __( 'Apply', 'wp-timed-content-block' ) }
+                </Button>
+            </Modal>
+        </>
+    );
+};
+
 /**
  * Block edit component
  */
 const Edit = ( { attributes, setAttributes, isSelected } ) => {
-    const now = new Date();
-    const defaultStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-    const defaultEnd = new Date(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).getTime() + 1000 * 60 * 60 * 24 * 7);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTimeStamp, setModalTimeStamp] = useState(null);
+    const [attributeName, setAttributeName] = useState(null);
+    const openModal = (timestamp, attributeName) => {
+        setModalTimeStamp(timestamp);
+        setAttributeName(attributeName);
+        setIsModalOpen(true)
+    };
+    const closeModal = (valueToSave) => {
+        if (valueToSave) {
+            setAttributes({ [attributeName]: valueToSave });
+        }
+        setIsModalOpen(false)
+    };
+    
     const { 
         startDateTime,
         endDateTime,
-        timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        timezone
     } = attributes;
-
-    const blockProps = useBlockProps({
-        className: 'wp-block-wp-timed-content-block',
-    });
 
     // Set default values when the block is first loaded
     useEffect(() => {
-        const updates = {};
+        const now = new Date();
+        const defaultStart = startOfDay(now);
+        const defaultEnd = endOfDay(now.getTime() + 1000 * 60 * 60 * 24 * 7);
         
-        if (!timezone) {
-            updates.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        }
+        const updates = {};
         if (!startDateTime) {
             updates.startDateTime = defaultStart.toISOString();
         }
@@ -44,63 +80,50 @@ const Edit = ( { attributes, setAttributes, isSelected } ) => {
             updates.endDateTime = defaultEnd.toISOString();
         }
         
+        if (!timezone) {
+            updates.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        }
+        
         if (Object.keys(updates).length > 0) {
             setAttributes(updates);
         }
     }, []); // Empty dependency array means this runs once on mount
 
+    const blockProps = useBlockProps({
+        className: 'wp-block-wp-timed-content-block',
+    });
+
     // Allow all block types by setting to null
     const ALLOWED_BLOCKS = null;
 
-    // Use an empty template to avoid adding default blocks
+    // Use paragraph as default block
     const TEMPLATE = [
-        // ['abb/alert-box', {"cId":"15d35458-9","type":"info","message":"Platzhalter für Hinweistext","icon":{"class":"fa-solid fa-circle-info"},"colors":{"color":"#2cacff","bg":"#2cacff1a"},"border":{"width":"2px","color":"#2cacff","radius":"8px"},"shadow":{}}], 
-        ['core/paragraph', {"placeholder":"This is just a placeholder..."}]
+        ['core/paragraph', {"placeholder":__("This is just a placeholder...", "wp-timed-content-block")}]
     ];
 
     return (
-        <div {...blockProps}>
-            {isSelected && (
-                <InspectorControls>
-                    <PanelBody title={__('Timing Settings', 'wp-timed-content-block')}>                        
-                        {
-                            <>
-                                <h3>{__('Start Date/Time', 'wp-timed-content-block')}</h3>
-                                <DateTimePicker
-                                    currentDate={startDateTime}
-                                    onChange={(date) => setAttributes({ startDateTime: date })}
-                                    startOfWeek="1"
-                                />
-                                
-                                <h3 style={{ marginTop: '1.5em' }}>{__('End Date/Time', 'wp-timed-content-block')}</h3>
-                                <DateTimePicker
-                                    currentDate={endDateTime}
-                                    onChange={(date) => setAttributes({ endDateTime: date })}
-                                    startOfWeek="1"
-                                />
-                            </>
-                        }
-                        
-                        {/* <div style={{ marginTop: '1.5em' }}>
-                            <SelectControl
-                                label={__('Timezone', 'wp-timed-content-block')}
-                                value={timezone}
-                                options={[
-                                    { label: __( 'Site Timezone', 'wp-timed-content-block' ), value: wp.timezoneString || 'UTC' },
-                                    { label: __( 'UTC', 'wp-timed-content-block' ), value: 'UTC' },
-                                    { label: __( 'Local Time', 'wp-timed-content-block' ), value: Intl.DateTimeFormat().resolvedOptions().timeZone },
-                                ]}
-                                onChange={(value) => setAttributes({ timezone: value })}
-                            />
-                        </div> */}
-                    </PanelBody>
-                </InspectorControls>
-            )}
+        <div {...blockProps}>            
+            <BlockControls>
+                <ToolbarGroup label="Options">
+                    <ToolbarButton onClick={() => openModal(startDateTime, 'startDateTime')}>
+                        { __( 'Start Date', 'wp-timed-content-block' ) }
+                    </ToolbarButton>
+                    <ToolbarButton onClick={() => openModal(endDateTime, 'endDateTime')}>
+                        { __( 'End Date', 'wp-timed-content-block' ) }
+                    </ToolbarButton>
+                </ToolbarGroup>
+            </BlockControls>
             
+            {
+                isModalOpen && (
+                    <MyModal timestamp={modalTimeStamp} closeModal={closeModal}/>
+                )
+            }
+
             <div className="timed-content-block-editor">
                 <div className="timed-content-block-editor__header">
                     <span className="dashicons dashicons-clock"></span>
-                    <span>{__('Timed Content', 'wp-timed-content-block')}</span>
+                    <span>{__(metadata.title, 'wp-timed-content-block')}</span>
                     <div className="timed-content-block-editor__schedule">
                         <span>From: {startDateTime ? new Date(startDateTime).toLocaleString() : __('Not set', 'wp-timed-content-block')}</span>
                         <span>Until: {endDateTime ? new Date(endDateTime).toLocaleString() : __('Not set', 'wp-timed-content-block')}</span>
@@ -127,7 +150,7 @@ const Save = ( { attributes } ) => {
         className: 'wp-block-wp-timed-content-block',
         'data-start-datetime': attributes.startDateTime,
         'data-end-datetime': attributes.endDateTime,
-        'data-timezone': attributes.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+        'data-timezone': attributes.timezone,
     });
 
     return (
@@ -142,7 +165,11 @@ const Save = ( { attributes } ) => {
 /**
  * Register the block
  */
-registerBlockType(metadata, {
+registerBlockType({
+    ...metadata,
+    title: __(metadata.title, 'wp-timed-content-block' ),
+    description: __(metadata.description, 'wp-timed-content-block' ),
+}, {
     edit: Edit,
     save: Save,
 });
